@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "MIA Coxim – Mais Inteligência Artificial",
+  "version": "0.13.2",
+  "version_name": "0.13.2-coxim",
+  "description": "MIA & MAX: assistente da central Mais Delivery. Revisa e cria cardápios, lança pedidos e organiza o quadro de Marketing.",
+  "permissions": [
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://painel.maisdeliveryempresas.com.br/*",
+    "https://maisdeliveryfranquia.com.br/*",
+    "https://maisdeliveryapp.com.br/*",
+    "https://pixabay.com/*",
+    "https://cdn.pixabay.com/*",
+    "https://images.unsplash.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Abrir a Central da MIA",
+    "default_icon": {
+      "16": "img/icone16.png",
+      "32": "img/icone32.png",
+      "48": "img/icone48.png"
+    }
+  },
+  "icons": {
+    "16": "img/icone16.png",
+    "32": "img/icone32.png",
+    "48": "img/icone48.png",
+    "128": "img/icone128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://painel.maisdeliveryempresas.com.br/painel/*"
+      ],
+      "js": [
+        "widget.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://maisdeliveryapp.com.br/pwa/*"
+      ],
+      "js": [
+        "app-coleta.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "img/*",
+        "fontes/*"
+      ],
+      "matches": [
+        "https://painel.maisdeliveryempresas.com.br/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+MIA & MAX – versão Coxim (base: MIA teste 0.13.2)
+=================================================
+Cópia fiel da extensão da equipe, adaptada para o Mais Delivery Coxim (MS).
+Tudo que muda de cidade para cidade está em  extensao\config.js .
+
+PASSO 0 – config.js (já preenchido em 14/10/2026)
+-------------------------------------------------
+Conferido direto no painel e no app de Coxim: idCidade 553, idMarketplace 369, sufixo " - Coxim" nos nomes das lojas,
+loja de teste MEKI LANCHE FELIZ - TESTES (id 110965), DDD 67, UF MS, hashtag #CoximMS.
+Só falta o campo  servidor  (endereço do seu Worker, PASSO 2). Pode digitar também em ⚙ na Central.
+
+PASSO 1 – Instalar a extensão
+-----------------------------
+1. Deixe esta pasta num lugar fixo (ex.: Documentos\MIA-Coxim). O Chrome usa ela.
+2. Chrome > chrome://extensions > ligue "Modo do desenvolvedor".
+3. "Carregar sem compactação" > escolha a pasta  extensao  (a que tem o manifest.json).
+4. IMPORTANTE: desative a extensão MIA original se ela estiver instalada.
+   As duas juntas aparecem em dobro dentro do painel (dois MAX flutuantes).
+5. Depois de qualquer edição no config.js: chrome://extensions > botão ⟳ da extensão > F5 no painel.
+
+PASSO 2 – Servidor próprio (Cloudflare Worker, ~20 minutos)
+-----------------------------------------------------------
+A chave da IA fica no servidor, nunca na extensão. Não use o servidor de outra cidade: os dados passariam por ele.
+1. Chave da IA: console.anthropic.com > Billing (US$ 5 a 10 bastam para testar) > API Keys. Não compartilhe a chave.
+2. dash.cloudflare.com > Workers & Pages > Create > Create Worker > nome "mia-coxim" > Deploy.
+3. Edit code: apague tudo, cole servidor\worker.js > Deploy.
+4. Settings > Variables and Secrets (tipo Secret):
+     ANTHROPIC_API_KEY  = a chave do item 1
+     CODIGOS            = {"seunome-codigo-dificil": "Seu Nome"}
+     CODIGOS_MARKETING  = (opcional) {"codigo-do-designer": "Nome do designer"}   -> só vê a aba Marketing
+   Opcionais (texto): LIMITE_CENTRAL (padrão 400 chamadas de IA por pessoa por dia), LIMITE_MARKETING (padrão 60), MODELO.
+5. Quadro de Marketing: Storage & Databases > Workers KV > Create "mia-quadro". No Worker: Settings > Bindings
+   > Add > KV namespace, variável  QUADRO , namespace mia-quadro. (Também guarda o contador de uso diário.)
+6. Abrir o endereço do Worker no navegador deve mostrar "MIA online".
+7. Coloque o endereço em config.js (campo servidor) ou digite em ⚙ na Central, e entre com o seu código.
+8. Política de privacidade: https://SEU-WORKER/privacidade .
+
+PASSO 3 – Primeiro teste (numa loja de TESTE)
+---------------------------------------------
+1. No painel, entre numa loja de teste.
+2. Ícone da MIA > Varredura. Use Corrigir/Aplicar em 1 ou 2 itens.
+3. Abra o Histórico e teste o Desfazer.
+4. No chat: "quais produtos estão sem foto?"
+5. Lançar pedido de teste: confira DDD (67), bairro, taxa de entrega e forma de pagamento.
+
+CUIDADOS
+--------
+- Trocar de estabelecimento pela MIA troca em TODAS as abas do painel. Evite no meio do expediente.
+- Antes de gravar, a MIA confere em qual loja o painel está. Se mudou, ela para.
+- Nada é apagado sem confirmação; quase tudo tem Desfazer.
+- Ranking dos parceiros e "horários fracos" do Marketing precisam do painel no login Gerencial.
+- A extensão usa telas e operações internas do painel (nrOperacao). Se o painel mudar, alguma função pode parar:
+  mande print do erro.
+
+O QUE FOI ADAPTADO EM RELAÇÃO À ORIGINAL
+----------------------------------------
+Cidade/UF/DDD/hashtag, textos e prompts da IA, servidor padrão (vazio: cada cidade usa o seu), nome da extensão,
+página de privacidade, referências a pessoas da equipe de Vila Rica. Todo o restante é idêntico à 0.13.2.

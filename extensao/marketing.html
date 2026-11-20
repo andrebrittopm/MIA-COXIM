@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marketing – MIA & MAX</title><link rel="icon" href="img/icone32.png">
+  <link rel="stylesheet" href="marketing.css">
+  <script src="abas.js"></script>
+</head>
+<body>
+  <header>
+    <div class="duo"><img class="avatar mia" src="img/mia-rosto.png" alt="MIA"><img class="avatar" src="img/max-rosto.png" alt="MAX"></div>
+    <div class="marca">
+      <span class="logo">MARKETING</span>
+      <span class="sub">Quadro de artes · Mais Delivery Coxim</span>
+    </div>
+    <nav class="abas-topo" id="abasTopo" aria-label="Trocar de área"></nav>
+    <span id="sinc" class="sinc" title="Sincronizado"><i></i><span id="sincTxt">conectando…</span></span>
+    <span id="quem" class="quem-topo"></span>
+    <button id="btnConfig" class="icone" title="Configurações">⚙</button>
+  </header>
+
+  <section id="config" class="painel-config" hidden>
+    <h3>🔐 Entrar na MIA</h3>
+    <p class="cfg-ajuda">Cole o <b>código de acesso</b> que você recebeu (ex.: <code>nome-a1b2c3</code>) e clique em Entrar. É ele que faz o login.</p>
+    <label>Código de acesso<input id="cfgCodigo" autocomplete="off" spellcheck="false" placeholder="cole o código aqui"></label>
+    <p id="cfgErro" class="cfg-erro" hidden></p>
+    <button id="cfgSalvar" class="botao vermelho">Entrar</button>
+    <details class="cfg-avancado"><summary>Avançado: endereço do servidor</summary>
+      <label>Endereço do servidor<input id="cfgServidor" placeholder="https://mia-coxim.SEU-USUARIO.workers.dev"></label>
+      <p class="cfg-ajuda">Só mude se você tiver um servidor próprio da MIA.</p>
+    </details>
+  </section>
+
+  <!-- ===== Quadro ===== -->
+  <div id="telaQuadro" class="tela-quadro">
+    <div class="barra-ferramentas">
+      <button id="btnSugerir" class="botao mia" hidden><img src="img/mia-rosto.png" alt="">MIA, sugere pautas</button>
+      <button id="btnNovo" class="botao vermelho">＋ Novo cartão</button>
+      <input id="busca" type="search" placeholder="Buscar cartão, loja, produto…">
+      <div id="filtros" class="filtros"></div>
+      <span id="filtroEsp" class="filtro-esp" hidden></span>
+      <span class="espaco"></span>
+      <div class="grupo-dir">
+        <button id="btnDatas" class="botao claro">📅 Datas</button>
+        <button id="btnMedidas" class="botao claro">📐 Medidas</button>
+        <button id="btnArquivados" class="botao claro" aria-pressed="false">🗄️ Arquivados</button>
+        <button id="btnLixeira" class="botao claro" aria-pressed="false" title="Cartões excluídos: dá para restaurar por 30 dias">🗑️ Lixeira</button>
+      </div>
+    </div>
+
+    <div id="falaMia" class="fala-mia" hidden>
+      <img src="img/mia-rosto.png" alt="">
+      <div class="balao"><b>MIA</b><span id="falaTexto"></span></div>
+      <button class="fechar" id="falaFechar" title="Fechar">×</button>
+    </div>
+
+    <main id="quadro" class="quadro" aria-label="Quadro de Marketing"></main>
+
+    <div id="vazio" class="vazio" hidden>
+      <img src="img/mia.png" alt="">
+      <h2 id="vazioTitulo">Quadro vazio</h2>
+      <p id="vazioTexto"></p>
+    </div>
+
+  </div>
+
+  <!-- ===== Próximas datas ===== -->
+  <dialog id="datas" class="modal pequeno">
+    <div class="modal-topo"><b class="m-titulo">📅 Próximas datas</b><button class="fechar" id="datasFechar" title="Fechar">×</button></div>
+    <div class="modal-corpo uma"><ul id="listaDatas" class="lista-datas"></ul>
+      <p class="nota">Datas locais de Coxim (aniversário da cidade, festas, eventos) entram como cartão novo.</p></div>
+  </dialog>
+
+  <!-- ===== Cartão aberto ===== -->
+  <dialog id="modal" class="modal">
+    <form method="dialog" id="form" autocomplete="off">
+      <div class="modal-topo">
+        <span id="mTipoFaixa" class="faixa"></span>
+        <input id="mTitulo" class="m-titulo" placeholder="Título do cartão" required>
+        <button type="button" class="fechar" id="mFechar" title="Fechar">×</button>
+      </div>
+      <div class="modal-corpo">
+        <div class="col-principal">
+          <div class="linha3">
+            <label>Tipo<select id="mTipo"></select></label>
+            <label>Coluna<select id="mColuna"></select></label>
+            <label>Loja<input id="mLoja" placeholder="Ex.: Vitória Burgues"></label>
+          </div>
+          <div class="linha3">
+            <label>Prazo da arte<input id="mPrazo" type="date"></label>
+            <label>Publicar em<input id="mPublicar" type="date"></label>
+            <label>Horário / período<input id="mHorario" placeholder="Ex.: almoço, 11h–14h"></label>
+          </div>
+          <div class="campo">
+            <span class="rotulo">Formatos</span>
+            <div id="mFormatos" class="formatos"></div>
+          </div>
+          <label class="campo">Produtos (separe por vírgula)<input id="mProdutos" placeholder="Ex.: X-Bacon, Batata P, Coca lata"></label>
+          <label class="campo">Briefing<textarea id="mDescricao" rows="6" placeholder="O que criar, para quê, elementos que não podem faltar…"></textarea></label>
+          <label class="campo">Texto da arte<textarea id="mTextoArte" rows="3" placeholder="Título + 1 linha + chamada"></textarea></label>
+          <div class="campo">
+            <span class="rotulo">Legenda <button type="button" class="mini" id="mCopiarLegenda">📋 Copiar</button> <button type="button" class="mini" id="mCopiarStatus" title="Versão curta, sem hashtags, para o Status do WhatsApp">📲 Copiar p/ Status</button></span>
+            <textarea id="mLegenda" rows="4" placeholder="Legenda pronta para Instagram e WhatsApp"></textarea>
+          </div>
+          <div class="campo">
+            <span class="rotulo">Checklist <small id="mCheckConta"></small></span>
+            <ul id="mChecklist" class="checklist"></ul>
+            <div class="add-linha"><input id="mNovoItem" placeholder="Novo item (Enter)"><button type="button" class="mini" id="mAddItem">＋</button></div>
+          </div>
+          <div class="campo">
+            <span class="rotulo">Artes e arquivos <small>(até 8 MB cada · arraste, cole ou escolha)</small></span>
+            <div id="mAnexos" class="anexos"></div>
+            <label class="soltar" id="mSoltar"><input type="file" id="mArquivo" multiple hidden>📎 Anexar arte</label>
+          </div>
+        </div>
+
+        <aside class="col-lateral">
+          <div class="acoes" id="mAcoesFluxo"></div>
+          <button type="button" class="botao mia largo" id="mMia"><img src="img/mia-rosto.png" alt="">MIA, melhora este cartão</button>
+          <input id="mPedidoMia" class="pedido-mia" placeholder="(opcional) o que quer mudar? ex.: legenda mais curta">
+          <button type="button" class="botao claro largo" id="mWhats">💬 Copiar briefing pro WhatsApp</button>
+          <h4>Comentários</h4>
+          <div id="mComentarios" class="comentarios"></div>
+          <div id="mSugestao" class="sugestao-mia" hidden></div>
+          <div class="add-linha"><textarea id="mNovoComent" rows="2" placeholder="Escreva um comentário… ex.: podemos colocar um cupom de 10%"></textarea></div>
+          <label class="mia-le"><input type="checkbox" id="mMiaLe" checked> 🦊 A MIA lê o comentário e sugere o cartão ajustado</label>
+          <button type="button" class="botao claro largo" id="mComentar">Comentar</button>
+          <details class="historico"><summary>Histórico</summary><ul id="mHistorico"></ul></details>
+          <div class="perigo">
+            <button type="button" class="botao claro" id="mArquivar">🗄️ Arquivar</button>
+            <button type="button" class="botao perigo-btn" id="mLixeira" title="Dá para restaurar por 30 dias">🗑️ Lixeira</button>
+            <button type="button" class="botao verde" id="mRestaurar" hidden>↩️ Restaurar</button>
+            <button type="button" class="botao perigo-btn" id="mExcluir" hidden>Excluir de vez</button>
+          </div>
+          <p class="criado" id="mCriado"></p>
+        </aside>
+      </div>
+      <div class="modal-rodape">
+        <span id="mStatus" class="m-status"></span>
+        <button type="button" class="botao claro" id="mCancelar">Fechar</button>
+        <button type="submit" class="botao vermelho" id="mSalvar">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Medidas ===== -->
+  <dialog id="medidas" class="modal pequeno">
+    <div class="modal-topo"><b class="m-titulo">📐 Medidas das artes</b><button class="fechar" id="medFechar" title="Fechar">×</button></div>
+    <div class="modal-corpo uma">
+      <table class="tabela-medidas" id="tabMedidas"></table>
+      <p class="nota">O banner do app aparece pequeno no celular (663 × 188): pouco texto, letra grande e o produto bem visível. Entregue em JPG ou PNG.</p>
+      <h4>Banners no ar agora</h4>
+      <div id="bannersAgora" class="banners-agora"><p class="nota">A MIA mostra aqui os banners do app depois de "MIA, sugere pautas".</p></div>
+    </div>
+  </dialog>
+
+  <div id="aviso" class="aviso" hidden role="status"></div>
+  <div id="zonaLixeira" class="zona-lixeira" aria-hidden="true"><span>🗑️</span>Solte aqui para mandar para a lixeira<small>dá para restaurar por 30 dias</small></div>
+  <script src="config.js"></script>
+  <script src="marketing.js" type="module"></script>
+</body>
+</html>

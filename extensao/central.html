@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Central MIA & MAX – Mais Delivery</title><link rel="icon" href="img/icone32.png">
+  <link rel="stylesheet" href="central.css">
+  <script src="abas.js"></script>
+</head>
+<body>
+  <header>
+    <button id="btnVoltar" class="icone" title="Voltar" hidden>←</button>
+    <div class="duo"><img class="avatar mia" src="img/mia-rosto.png" alt="MIA"><img class="avatar" src="img/max-rosto.png" alt="MAX"></div>
+    <div class="marca">
+      <span class="logo">MIA <small>&amp;</small> MAX</span>
+      <span class="sub">Central da MIA · Mais Delivery Coxim</span>
+    </div>
+    <nav class="abas-topo" id="abasTopo" aria-label="Trocar de área"></nav>
+    <div id="estab" class="estab"><span class="ponto"></span><span id="estabNome">Procurando o painel…</span></div>
+    <button id="btnConfig" class="icone" title="Configurações">⚙</button>
+  </header>
+  <div class="conteudo">
+
+  <section id="config" class="cartao" hidden>
+    <h3>🔐 Entrar na MIA</h3>
+    <p class="cfg-ajuda">Cole o <b>código de acesso</b> que você recebeu (ex.: <code>nome-a1b2c3</code>) e clique em Entrar. É ele que faz o login.</p>
+    <label>Código de acesso<input id="cfgCodigo" autocomplete="off" spellcheck="false" placeholder="cole o código aqui"></label>
+    <p id="cfgErro" class="cfg-erro" hidden></p>
+    <button id="cfgSalvar" class="botao vermelho">Entrar</button>
+    <details class="cfg-avancado"><summary>Avançado: endereço do servidor</summary>
+      <label>Endereço do servidor<input id="cfgServidor" placeholder="https://mia-central.seu-usuario.workers.dev"></label>
+      <p class="cfg-ajuda">Só mude se você tiver um servidor próprio da MIA.</p>
+    </details>
+  </section>
+
+  <!-- ===== Início ===== -->
+  <main id="telaInicio" class="tela">
+    <div class="boasvindas dupla-inicio">
+      <img src="img/mia.png" alt="MIA" class="personagem">
+      <div class="meio">
+        <h1>A dupla da central 🦊🦊</h1>
+        <div class="dialogo" id="dlgInicio"></div>
+      </div>
+      <img src="img/max.png" alt="MAX" class="personagem max">
+    </div>
+
+    <div class="grade">
+      <button class="missao m-vermelho" data-acao="varredura">
+        <span class="emoji">🔍</span><b>Varredura</b><small>Procura erros no cardápio</small>
+      </button>
+      <button class="missao m-laranja" data-acao="melhorias">
+        <span class="emoji">✨</span><b>Melhorias</b><small>Dicas para vender mais</small>
+      </button>
+      <button class="missao m-amarelo" data-acao="combos">
+        <span class="emoji">🍔</span><b>Combos</b><small>Sugestões com preço</small>
+      </button>
+      <button class="missao m-roxo" data-acao="reajuste">
+        <span class="emoji">💲</span><b>Reajustar preços</b><small>Em % ou R$, loja ou categoria</small>
+      </button>
+      <button class="missao m-azul" data-acao="historico">
+        <span class="emoji">🕘</span><b>Histórico</b><small>Tudo que a dupla mudou · Desfazer</small>
+      </button>
+      <button class="missao m-verde" data-acao="chat">
+        <span class="emoji">💬</span><b>Conversar</b><small>Peça qualquer coisa</small>
+      </button>
+      <button class="missao m-turquesa" data-acao="criar">
+        <span class="emoji">📸</span><b>Criar cardápio</b><small>De foto, PDF ou lista</small><i>novo</i>
+      </button>
+      <button class="missao m-ciano" data-acao="fotos">
+        <span class="emoji">🖼️</span><b>Fotos automáticas</b><small>Produtos e opções sem foto</small><i>novo</i>
+      </button>
+      <button class="missao m-dourado" data-acao="ranking">
+        <span class="emoji">🏆</span><b>Ranking dos parceiros</b><small>Nota de todos os cardápios</small><i>novo</i>
+      </button>
+      <button class="missao m-rosa" data-acao="pedido">
+        <span class="emoji">🧾</span><b>Lançar pedido</b><small>Digitado, colado, print ou papel</small>
+      </button>
+    </div>
+  </main>
+
+  <!-- ===== Carregando ===== -->
+  <main id="telaCarregando" class="tela" hidden>
+    <div class="carregando">
+      <div class="carregando-duo"><img src="img/mia.png" alt="" id="carMia"><img src="img/max.png" alt="" class="pulando" id="carMax"></div>
+      <h2 id="carTitulo">Trabalhando…</h2>
+      <div class="barra"><div id="carBarra"></div></div>
+      <p id="carEtapa">Começando…</p>
+      <p class="dica" id="carDica"></p>
+    </div>
+  </main>
+
+  <!-- ===== Resultado da varredura ===== -->
+  <main id="telaVarredura" class="tela duas-colunas" hidden>
+    <aside class="lado">
+    <div class="placar cartao">
+      <div class="anel" id="anel"><span id="notaNum">0</span><small>de 100</small></div>
+      <div>
+        <h2 id="notaTitulo">—</h2>
+        <div class="chips" id="totais"></div>
+      </div>
+    </div>
+    <div class="dialogo" id="dlgVarredura"></div>
+    <div class="rodape-acoes">
+      <button class="botao laranja" data-acao="melhorias">✨ Ver melhorias</button>
+      <button class="botao verde-whats" id="msgParceiroVarredura">📲 Mensagem pro parceiro</button>
+      <button class="botao claro" id="copiarRelatorio">📋 Copiar relatório</button>
+      <button class="botao claro" id="refazerVarredura">↻ Refazer</button>
+    </div>
+    </aside>
+    <div id="listaProblemas"></div>
+  </main>
+
+  <!-- ===== Melhorias ===== -->
+  <main id="telaMelhorias" class="tela" hidden>
+    <div class="dialogo" id="dlgMelhorias"></div>
+    <nav class="abas" id="abas">
+      <button data-aba="descricoes" class="ativa">📝 Descrições</button>
+      <button data-aba="categorias">🗂 Categorias</button>
+      <button data-aba="juntos">🤝 Saem juntos</button>
+      <button data-aba="sugeridos">➕ Peça também</button>
+      <button data-aba="combos">🍔 Combos</button>
+      <button data-aba="ordem">↕ Ordem das categorias</button>
+      <button data-aba="ordemprod">🎯 Ordem dos produtos</button>
+      <button data-aba="nomes">🏷 Nomes</button>
+      <button data-aba="niveis">🧩 Níveis</button>
+    </nav>
+    <div id="conteudoAba" class="grade-sugestoes"></div>
+  </main>
+
+  <!-- ===== Reajuste de preços ===== -->
+  <main id="telaReajuste" class="tela duas-colunas" hidden>
+    <aside class="lado">
+      <div class="cartao formulario">
+        <h3>💲 Reajustar preços</h3>
+        <label>Onde
+          <select id="rjEscopo"><option value="loja">Loja inteira</option><option value="categoria">Uma categoria</option></select>
+        </label>
+        <label id="rjCatBox" hidden>Categoria<select id="rjCategoria"></select></label>
+        <div class="dupla">
+          <label>Tipo<select id="rjTipo"><option value="percentual">Porcentagem (%)</option><option value="valor">Valor fixo (R$)</option></select></label>
+          <label>Quanto<input id="rjValor" type="number" step="any" value="10"></label>
+        </div>
+        <small class="motivo">Use número negativo para desconto (ex.: -10).</small>
+        <label>Arredondar<select id="rjArred"><option value="90">Terminar em ,90</option><option value="50">,00 ou ,50</option><option value="00">Valor inteiro</option><option value="nao">Não arredondar</option></select></label>
+        <button class="botao claro" id="rjPrever">👀 Ver como fica</button>
+      </div>
+      <div class="dialogo" id="dlgReajuste"></div>
+    </aside>
+    <div class="cartao">
+      <div class="linha-topo"><h3 id="rjTitulo">Prévia</h3><button class="botao vermelho" id="rjAplicar" disabled>Aplicar no painel</button></div>
+      <div class="barra" id="rjBarraBox" hidden><div id="rjBarra"></div></div>
+      <table class="tabela"><thead><tr><th>Produto</th><th>Categoria</th><th>Antes</th><th>Depois</th></tr></thead><tbody id="rjLinhas"><tr><td colspan="4" class="motivo">A prévia aparece aqui.</td></tr></tbody></table>
+    </div>
+  </main>
+
+  <!-- ===== Criar cardápio: entrada ===== -->
+  <main id="telaCriar" class="tela" hidden>
+    <div class="dialogo" id="dlgCriar"></div>
+    <label class="soltar" id="soltar">
+      <input id="crArquivo" type="file" accept="image/*,application/pdf" multiple hidden>
+      <span class="grande">📸</span>
+      <b>Arraste aqui as fotos ou o PDF do cardápio</b>
+      <small>ou clique para escolher · pode mandar várias fotos de uma vez · também dá pra colar um print (Ctrl+V)</small>
+    </label>
+    <div id="crMiniaturas" class="miniaturas"></div>
+    <details class="cartao" id="crTextoBox"><summary><b>⌨️ Ou cole/digite o cardápio em texto</b></summary>
+      <textarea id="crTexto" rows="7" placeholder="Ex.:&#10;LANCHES&#10;X-Salada – pão, hambúrguer, queijo, alface e tomate – 18,00&#10;X-Bacon – 22,00&#10;BEBIDAS&#10;Coca-Cola lata 6,00"></textarea>
+    </details>
+    <div class="rodape-acoes"><button class="botao vermelho grande-btn" id="crLer">✨ Ler cardápio</button></div>
+  </main>
+
+  <!-- ===== Criar cardápio: revisão ===== -->
+  <main id="telaRevisao" class="tela duas-colunas" hidden>
+    <aside class="lado">
+      <div class="cartao formulario">
+        <h3>🧾 Revisão antes de gravar</h3>
+        <div class="chips" id="rvTotais"></div>
+        <div class="rv-opcoes">
+          <b>Como cadastrar</b>
+          <label class="interruptor"><input type="checkbox" id="rvAtivo" checked><span>Produtos já <b>ativos</b> no app</span></label>
+          <label class="interruptor"><input type="checkbox" id="rvFotos" checked><span>📸 Colocar <b>fotos nos produtos</b></span></label>
+          <label class="interruptor"><input type="checkbox" id="rvFotosOp" checked><span>🖼️ Colocar <b>fotos nas opções</b> dos níveis</span></label>
+          <label class="interruptor"><input type="checkbox" id="rvDesc" checked><span>✍️ Usar as <b>descrições sugeridas</b></span></label>
+          <label class="rv-estoque">📦 Estoque <input id="rvEstoque" type="number" min="0" placeholder="sem controle"></label>
+          <small class="motivo">Estoque vazio = sem controle (padrão do painel). Dá para mudar produto por produto também.</small>
+          <div class="rv-marcar"><button class="botao mini" id="rvTodos">☑️ Marcar todos</button><button class="botao mini" id="rvNenhum">⬜ Desmarcar todos</button></div>
+        </div>
+        <div id="rvAvisos"></div>
+        <button class="botao vermelho" id="rvGravar">🚀 Cadastrar no painel</button>
+        <div class="barra" id="rvBarraBox" hidden><div id="rvBarra"></div></div>
+        <small id="rvStatus" class="motivo"></small>
+      </div>
+      <div class="dialogo" id="dlgRevisao"></div>
+    </aside>
+    <div id="rvCategorias" class="revisao"></div>
+  </main>
+
+  <!-- ===== Fotos automáticas ===== -->
+  <main id="telaFotos" class="tela" hidden>
+    <div class="dialogo" id="dlgFotos"></div>
+    <div class="cartao barra-fotos">
+      <div class="chips" id="ftTotais"></div>
+      <div class="acoes-fotos">
+        <button class="botao claro" id="ftNenhuma">Desmarcar todas</button>
+        <button class="botao vermelho" id="ftAplicar">✅ Aplicar fotos</button>
+      </div>
+      <div class="barra" id="ftBarraBox" hidden><div id="ftBarra"></div></div>
+      <small class="motivo">Fotos do Pixabay e do Unsplash: gratuitas, liberadas inclusive para uso comercial. Clique na foto que preferir; "Pular" deixa o item sem mudar.</small>
+    </div>
+    <div id="ftLista" class="fotos-lista"></div>
+  </main>
+
+  <!-- ===== Ranking ===== -->
+  <main id="telaRanking" class="tela" hidden>
+    <div class="dialogo" id="dlgRanking"></div>
+    <div class="cartao rk-topo">
+      <div>
+        <h3>🏆 Ranking dos cardápios</h3>
+        <small class="motivo" id="rkInfo">Lê o cardápio de cada parceiro pela loja do app (como o cliente vê). O painel não muda de estabelecimento: a central pode continuar trabalhando.</small>
+      </div>
+      <div class="rk-botoes">
+        <button class="botao vermelho" id="rkRodar">▶ Rodar ranking agora</button>
+        <button class="botao claro" id="rkCancelar" hidden>■ Parar</button>
+        <button class="botao claro" id="rkCopiar" hidden>📋 Copiar planilha</button>
+      </div>
+      <div class="barra" id="rkBarraBox" hidden><div id="rkBarra"></div></div>
+      <small id="rkStatus" class="motivo"></small>
+      <details id="rkCriterio" class="rk-criterio" hidden><summary>Como a nota é calculada?</summary>
+        <div class="chips"><span class="chip">📸 Produtos com foto · 35</span><span class="chip">📝 Descrições boas (25+ letras) · 30</span><span class="chip">🖼️ Fotos das opções · 10</span><span class="chip">🗂 Organização · 15</span><span class="chip">✅ Sem erros graves · 10</span></div>
+        <small class="motivo">Proporcional ao tamanho do cardápio: loja pequena e loja grande competem de igual pra igual. Lojas inativas, arquivadas e de teste ficam de fora.</small></details>
+    </div>
+    <div id="rkPodio" class="rk-podio"></div>
+    <div class="cartao" id="rkTabelaBox" hidden>
+      <div class="linha-topo"><h3 id="rkTitulo">Todos os parceiros</h3><input id="rkBusca" placeholder="🔎 Buscar parceiro…"></div>
+      <table class="tabela rk-tabela"><thead><tr><th>#</th><th>Parceiro</th><th>Nota</th><th>Evolução</th><th>Produtos</th><th>Sem foto</th><th>Sem descrição</th><th>⭐ Clientes</th><th></th></tr></thead><tbody id="rkLinhas"></tbody></table>
+    </div>
+  </main>
+
+  <!-- ===== Histórico ===== -->
+  <main id="telaHistorico" class="tela" hidden>
+    <div class="dialogo" id="dlgHistorico"></div>
+    <div id="listaHistorico" class="historico"></div>
+  </main>
+
+  <!-- ===== Chat ===== -->
+  <main id="telaChat" class="tela chat" hidden>
+    <div id="conversa">
+      <div class="msg mia"><b class="quem mia">MIA</b>Oi! Pode pedir pra gente em texto: "em qual estabelecimento estamos?", "quais produtos estão sem preço?"…</div>
+    </div>
+    <div id="status"></div>
+    <footer>
+      <div id="anexos"></div>
+      <div class="entrada">
+        <label class="clipe" title="Anexar foto ou PDF">📎<input id="arquivo" type="file" accept="image/*,application/pdf" multiple hidden></label>
+        <textarea id="texto" rows="2" placeholder="Digite um comando…"></textarea>
+        <button id="btnEnviar" class="botao vermelho">Enviar</button>
+      </div>
+    </footer>
+  </main>
+
+  </div>
+
+  <!-- ===== Mensagem pro parceiro ===== -->
+  <div id="modalMsg" class="modal" hidden>
+    <div class="cartao modal-caixa">
+      <div class="linha-topo"><h3>📲 Mensagem para <span id="msgEstab"></span></h3><button class="icone escuro" id="msgFechar">×</button></div>
+      <div class="dialogo" id="dlgMsg"></div>
+      <textarea id="msgTexto" rows="12"></textarea>
+      <div class="rodape-acoes">
+        <button class="botao verde-whats" id="msgWhats">📲 Abrir no WhatsApp</button>
+        <button class="botao claro" id="msgCopiar">📋 Copiar</button>
+        <button class="botao claro" id="msgRefazer">↻ Escrever outra</button>
+      </div>
+      <small class="motivo" id="msgTel"></small>
+    </div>
+  </div>
+
+  <!-- ===== Avisos do MAX ===== -->
+  <div id="aviso" class="max-aviso" hidden>
+    <img src="img/max-rosto.png" alt="" id="avisoFoto">
+    <div><b id="avisoTitulo">MAX avisa</b><p id="avisoTexto"></p></div>
+    <button class="icone" id="avisoFechar">×</button>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="central.js"></script>
+</body>
+</html>
